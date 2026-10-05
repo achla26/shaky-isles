@@ -27,6 +27,26 @@ jobs:
       - name: Run Connect DB
         run: python scripts/connect_db.py
 
+      - name: Create dbt profile          
+        run: |
+          mkdir -p ~/.dbt
+          cat << EOF > ~/.dbt/profiles.yml
+          shaky_isles:
+            outputs:
+              dev:
+                type: duckdb
+                path: ../quakes.duckdb
+                threads: 1
+
+              prod:
+                type: duckdb
+                path: prod.duckdb
+                threads: 4
+
+            target: dev
+
+          EOF
+
       - name: Run dbt transform
         run: |
           cd quake_dbt
