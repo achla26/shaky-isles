@@ -1,16 +1,5 @@
-data/
-*.duckdb
-*.duckdb.wal
-__pycache__/
-venv/
-*.ipynb
-target/
-dbt_packages/
-logs/
-.env
-*.json
-
 .git
+.env
 .DS_Store
 airflow_settings.yaml
 __pycache__/
