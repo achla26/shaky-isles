@@ -1,0 +1,7 @@
+version: 2 
+sources:
+  - name: raw
+    schema: bronze
+    tables:
+    - name: quakes
+      description: "Recorded Quakes with ingested date. This is the raw data and is not cleaned or transformed in any way. It is stored in the bronze layer."
