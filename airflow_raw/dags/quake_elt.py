@@ -37,20 +37,21 @@ def quake_elt():
         import os
 
         profile_content = """
-    shaky_isles:
-    outputs:
-        dev:
-        type: duckdb
-        path: ../quakes.duckdb
-        threads: 1
-    target: dev
-    """
+            shaky_isles:
+                outputs:
+                    dev:
+                    type: duckdb
+                    path: ../quakes.duckdb
+                    threads: 1
+                target: dev
+        """
         os.makedirs(os.path.expanduser("~/.dbt"), exist_ok=True)
         with open(os.path.expanduser("~/.dbt/profiles.yml"), "w") as f:
             f.write(profile_content)
 
         subprocess.run(["dbt", "run"], cwd="/opt/airflow/include/quake_dbt", check=True)
         subprocess.run(["dbt", "test"], cwd="/opt/airflow/include/quake_dbt", check=True)
-        extract() >> load() >> transform()
+    
+    extract() >> load() >> transform()
 
 quake_elt()

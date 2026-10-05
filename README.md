@@ -43,3 +43,6 @@ Python · DuckDB · dbt · Docker · Airflow · GitHub Actions
 3. **Phase 3 (Transform):** Connected raw data to dbt using `source()`, built models with `ref()`, and used `json_extract_string()` to parse nested JSON into typed columns — plus added schema tests (`not_null`, `unique`).
 4. **Phase 4A (CI/CD):** Automated the pipeline with GitHub Actions, including solving the classic "profiles.yml doesn't exist on a fresh machine" issue by generating it at runtime.
 5. **Phase 4B (Orchestration):** Built and ran an Airflow DAG locally using Docker, learning how task dependencies, retries, and environment differences (missing dependencies, working directories) affect a real pipeline.
+
+## Known Limitations / Future Improvements
+- GitHub Actions runners are ephemeral — each run starts fresh, so bronze JSON files and the DuckDB file don't persist between runs. In production, this would be solved using cloud storage (e.g., Azure Blob Storage, S3) instead of the local filesystem. Planning to revisit this after Skill 7 (Azure + Fabric).
