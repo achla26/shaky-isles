@@ -21,3 +21,13 @@
 >
 > Finally, I added tests in `schema.yml` — `not_null` and `unique` — on key columns in both models, and confirmed all 5 tests passed with `dbt test`.
  
+
+> **Phase 4A — Automate (GitHub Actions)**
+>
+> In this phase, I automated my pipeline to run on a schedule using GitHub Actions. A workflow file (`.github/workflows/quake.yml`) defines three things: **triggers** (`on:` — a cron schedule for hourly runs, plus `workflow_dispatch` for manual runs from the GitHub UI), a **job** (`runs-on: ubuntu-latest` — a fresh virtual machine), and **steps** (checkout code → set up Python → install dependencies → run my fetch, load, and dbt scripts in order).
+>
+> The key realization: each run happens on a **brand-new machine** that has no knowledge of my laptop — nothing exists there except what's committed to the Git repo. This meant my local `profiles.yml` (which lives outside the repo, in my home folder) wasn't available to dbt on the runner. I fixed this by adding a step that recreates the file at runtime (`mkdir -p ~/.dbt` + writing the file content via a heredoc) before running dbt.
+>
+> This also taught me an important security principle: hardcoding credentials into a workflow file is fine only when there's nothing sensitive to leak (like my local DuckDB file path). For a real cloud database with usernames/passwords, those values should never be committed to Git — instead, **GitHub Secrets** should be used to inject them securely as environment variables at runtime, since Git history is permanent and secrets committed once can't truly be "removed."
+>
+> Proof: workflow ran successfully end-to-end (green tick) on an hourly schedule, fully automated.
