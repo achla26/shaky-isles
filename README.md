@@ -1,9 +1,10 @@
 # Shaky Isles 🏔️
-Hourly NZ earthquake pipeline: GeoNet API → Parquet → DuckDB → dbt marts.
+Hourly NZ earthquake pipeline: GeoNet API.
 
 ## Architecture
-GeoNet API → scripts/fetch_quakes.py → data/bronze/ → DuckDB → quake_dbt/ → GitHub Actions ⏰
 
+
+![Alt Text](screenshots/shaky-isles-architecture-pro.png)   
 
 ## Stack
 Python · DuckDB · dbt · Docker · Airflow · GitHub Actions
@@ -34,6 +35,7 @@ Python · DuckDB · dbt · Docker · Airflow · GitHub Actions
 
 **4. Or let it run automatically —** GitHub Actions triggers this every hour (see `.github/workflows/quake.yml`).
 
+![Alt Text](screenshots/airflow.png)   
 
 ## What I Learned
 1. **Phase 1 (Extract):** Raw data should be stored exactly as received, without modification — I initially extracted only select fields and lost part of the raw structure, then corrected it to store the full response.
