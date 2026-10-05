@@ -19,7 +19,7 @@ def read_data_from_bronze():
             data = json.load(f)
 
         if data is not None:
-            return [json.dumps(r) for r in data['features']] 
+            return [(r['properties']['publicID'], json.dumps(r)) for r in data['features']] 
     except Exception as e:
         print(f"ERROR: {str(e)}")
         return None
@@ -30,17 +30,29 @@ def bronze():
 
     now = datetime.now()
     df = pd.DataFrame({
-        "raw_json": rows,
+        "quake_id": [row[0] for row in rows],   
+        "raw_json": [row[1] for row in rows],  
         "ingested_at": now
     })
 
     con = connect()
-    con.sql("CREATE SCHEMA IF NOT EXISTS bronze")
-    con.sql("DROP TABLE IF EXISTS bronze.quakes")
-    con.sql("CREATE TABLE IF NOT EXISTS bronze.quakes AS SELECT * FROM df")
+    con.sql("CREATE SCHEMA IF NOT EXISTS bronze") 
+    con.sql("""
+        CREATE TABLE IF NOT EXISTS bronze.quakes (
+            quake_id VARCHAR,
+            raw_json VARCHAR,
+            ingested_at TIMESTAMP
+        )
+    """)
+    con.sql("""
+        INSERT INTO bronze.quakes
+        SELECT * FROM df
+        WHERE quake_id NOT IN (SELECT quake_id FROM bronze.quakes)
+    """) 
+
     q = con.sql("SELECT COUNT(*) AS total_rows FROM bronze.quakes").fetchone()
     print(q)
     con.close()
  
 
-bronze()
+bronze() 
