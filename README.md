@@ -35,6 +35,7 @@ Python · DuckDB · dbt · Docker · Airflow · GitHub Actions
 
 **4. Or let it run automatically —** GitHub Actions triggers this every hour (see `.github/workflows/quake.yml`).
 
+![Alt Text](screenshots/action.png)   
 ![Alt Text](screenshots/airflow.png)   
 
 ## What I Learned
