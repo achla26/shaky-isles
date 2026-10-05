@@ -40,9 +40,9 @@ def quake_elt():
             shaky_isles:
                 outputs:
                     dev:
-                    type: duckdb
-                    path: ../quakes.duckdb
-                    threads: 1
+                        type: duckdb
+                        path: ../quakes.duckdb
+                        threads: 1
                 target: dev
         """
         os.makedirs(os.path.expanduser("~/.dbt"), exist_ok=True)
