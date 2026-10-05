@@ -31,3 +31,16 @@
 > This also taught me an important security principle: hardcoding credentials into a workflow file is fine only when there's nothing sensitive to leak (like my local DuckDB file path). For a real cloud database with usernames/passwords, those values should never be committed to Git — instead, **GitHub Secrets** should be used to inject them securely as environment variables at runtime, since Git history is permanent and secrets committed once can't truly be "removed."
 >
 > Proof: workflow ran successfully end-to-end (green tick) on an hourly schedule, fully automated.
+
+> **Phase 4B — Automate (Airflow, raw Docker Compose)**
+>
+> I set up a local Airflow environment using the official Apache Airflow `docker-compose.yaml` (switched from Astro after hitting a tool-specific volume-mount limitation — a good reminder that sometimes simpler, lower-level tools give more control than convenience wrappers).
+>
+> I wrote a TaskFlow DAG (`quake_elt`) with three tasks — `extract`, `load`, `transform` — chained with `>>`, scheduled `@hourly` with `catchup=False` to avoid backfilling old runs. I set `retries=2` on extract/load (network issues are often transient) but `retries=0` on transform (a failing dbt run usually means a real bug — retrying won't fix it).
+>
+> Debugging this taught me two important lessons:
+> 1. **Missing dependencies:** the official Airflow image doesn't include libraries like `duckdb` by default — fixed using `_PIP_ADDITIONAL_REQUIREMENTS` in `.env` (a local-dev-only shortcut; production would bake dependencies into a custom image).
+> 2. **Working directory consistency matters:** when multiple subprocess calls reference relative paths, they all need a consistent base directory — otherwise files get created in one place and looked for in another. I fixed this by explicitly setting `cwd` for every subprocess call.
+>
+> Also re-hit the same "profiles.yml doesn't exist on a fresh environment" issue from the GitHub Actions phase — confirming this is a recurring pattern whenever code runs on a new/ephemeral machine, not a one-off bug.
+ 
