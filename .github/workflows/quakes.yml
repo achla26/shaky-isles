@@ -1,0 +1,36 @@
+name: Quake Pipeline
+
+on:
+  workflow_dispatch: # allows you to manually trigger the workflow from the Actions tab in GitHub
+  schedule:
+    - cron: '0 * * * *' # runs every hour
+
+jobs:
+  run-pipeline:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4 # This action checks out your repository under $GITHUB_WORKSPACE, so your workflow can access it
+
+      - name: Set up Python
+        uses: actions/setup-python@v5 # This action sets up a Python environment for your workflow
+        with:
+          python-version: "3.14.5"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run fetch script
+        run: python scripts/fetch_quakes.py
+
+      - name: Run Connect DB
+        run: python scripts/connect_db.py
+
+      - name: Run dbt transform
+        run: |
+          cd quake_dbt
+          dbt run
+          dbt test
+
+   
