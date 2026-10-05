@@ -4,3 +4,7 @@ data/
 __pycache__/
 venv/
 *.ipynb
+target/
+dbt_packages/
+logs/
+.env
