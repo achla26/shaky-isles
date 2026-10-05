@@ -1,0 +1,28 @@
+version: 2
+
+models:
+  - name: stg_quakes
+    description: This table has basic information about a  quake, as well as some derived facts based on the raw data
+
+    columns:
+      - name: quake_id
+        description: This is a unique identifier for a quake 
+        tests:
+          - unique
+          - not_null
+
+  - name: mart_daily_counts
+    description: This table has daily counts of quakes, including the number of quakes 
+
+    columns:
+      - name: quake_date
+        description: This is the date of the quake
+        tests:
+          - not_null
+          - unique
+      - name: quake_count
+        description: This is the number of quakes that occurred on a given date
+        tests:
+          - not_null
+
+      
